@@ -6,7 +6,7 @@ DEBUG_SECRET = None   # For testing, set to a number such as 42. Set back to Non
 TIME_LIMIT = 60       # Seconds allowed in Time Challenge mode
 DEFAULT_ATTEMPTS_ALLOWED = 10   #Max attempts allowed in Classic mode
 DEFAULT_RANGE_START, DEFAULT_RANGE_END = 0, 50 # Start and end values when not speified by user is Phase 1
-
+TIME_LIMIT_SECONDS = 60 # Max seconds in timed challenge mode
 print("Welcome to the Number Guessing Game")
 
 # ---------- Choose a level ----------
@@ -23,7 +23,10 @@ range_start, range_end, attempts_allowed = level_map[level]
 
 # ---------- Choose a mode ----------
 # Goal: keep asking until the player picks Classic or Time Challenge.
-
+mode = input("Enter T for timed mode, C for Classic mode: ").strip().capitalize() #todo: need to show in numbered list format
+while not mode in ('T', 'C'):
+    mode = input("Enter T for timed mode, C for Classic mode: ").strip().capitalize()
+isTimed = True if mode == 'T' else False
 # ---------- Set up the round ----------
 # Goal: pick the secret number (use DEBUG_SECRET when it is not None) and start the clock.
 secret = random.randint(range_start, range_end) if not DEBUG_SECRET else DEBUG_SECRET #select random secret if default is none
@@ -31,16 +34,27 @@ secret = random.randint(range_start, range_end) if not DEBUG_SECRET else DEBUG_S
 # ---------- Guess loop ----------
 # Goal: keep asking for guesses until the player wins, runs out of attempts, or runs out of time.
 num_attempts = 0
+start_time = time.time()
 while num_attempts < attempts_allowed:
     print(f"Number of attempts remaining: {attempts_allowed-num_attempts}")
+    if isTimed:
+        print(f"Time remaining: {TIME_LIMIT_SECONDS - (time.time() - start_time)} seconds")
     user_guess = input(f"Guess a number between {range_start} to {range_end}: ").strip()
-    if not user_guess.isdigit(): #reject user inut if it is string/ letters
+    if not user_guess.isdigit(): #reject user input if it is string/ letters
         print("Not a valid number, only integers supported")
         continue
     user_guess_int = int(user_guess) #convert string input to integer
     if user_guess_int < range_start or user_guess_int > range_end:
         print(f"Numbers are out of range, range is between {range_start} and {range_end}")
+        continue
+    
     num_attempts += 1
+
+    if isTimed:
+        time_elapsed = time.time() - start_time
+        if time_elapsed > TIME_LIMIT_SECONDS:
+            print(f"Time limit expired, the number was: {secret}")
+            break #No need to continue after the secret is revealed
 
     if user_guess_int == secret:
         print("Correct, CONGRATS!!")
