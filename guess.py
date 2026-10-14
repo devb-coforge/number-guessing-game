@@ -11,31 +11,40 @@ print("Welcome to the Number Guessing Game")
 
 # ---------- Choose a level ----------
 # Goal: keep asking until the player picks a valid level, then set the range and attempt limit.
+level_map = {'E': (1, 50, 10), 'M': (1, 100, 8), 'H': (1, 500, 10)} # Maps level to (start, end, attempts_allowed)
+
+level = input("Select a level, E for Easy, M for Medium, H for Hard: ").strip().capitalize() #Supports case-insensitive input
+
+while level not in level_map.keys(): #keep looping until user enters a valid level
+    level = input("Select a level, E for Easy, M for Medium, H for Hard").strip().capitalize()
+
+range_start, range_end, attempts_allowed = level_map[level]
+
 
 # ---------- Choose a mode ----------
 # Goal: keep asking until the player picks Classic or Time Challenge.
 
 # ---------- Set up the round ----------
 # Goal: pick the secret number (use DEBUG_SECRET when it is not None) and start the clock.
-secret = random.randint(DEFAULT_RANGE_START, DEFAULT_RANGE_END) if not DEBUG_SECRET else DEBUG_SECRET
+secret = random.randint(range_start, range_end) if not DEBUG_SECRET else DEBUG_SECRET #select random secret if default is none
 
 # ---------- Guess loop ----------
 # Goal: keep asking for guesses until the player wins, runs out of attempts, or runs out of time.
 num_attempts = 0
-while num_attempts < DEFAULT_ATTEMPTS_ALLOWED:
-    print(f"Number of attempts remaining: {DEFAULT_ATTEMPTS_ALLOWED-num_attempts}")
-    user_guess = input(f"Guess a number between {DEFAULT_RANGE_START} to {DEFAULT_RANGE_END}: ").strip()
-    if not user_guess.isdigit():
+while num_attempts < attempts_allowed:
+    print(f"Number of attempts remaining: {attempts_allowed-num_attempts}")
+    user_guess = input(f"Guess a number between {range_start} to {range_end}: ").strip()
+    if not user_guess.isdigit(): #reject user inut if it is string/ letters
         print("Not a valid number, only integers supported")
         continue
-    user_guess_int = int(user_guess)
-    if user_guess_int < DEFAULT_RANGE_START or user_guess_int > DEFAULT_RANGE_END:
-        print(f"Numbers are out of range, range is between {DEFAULT_RANGE_START} and {DEFAULT_RANGE_END}")
+    user_guess_int = int(user_guess) #convert string input to integer
+    if user_guess_int < range_start or user_guess_int > range_end:
+        print(f"Numbers are out of range, range is between {range_start} and {range_end}")
     num_attempts += 1
 
     if user_guess_int == secret:
         print("Correct, CONGRATS!!")
-        break
+        break # Once user guesses the secret break the loop
     elif user_guess_int < secret:
         print("Too Low")
     else:
