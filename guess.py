@@ -3,8 +3,7 @@ import time
 
 # ---------- Settings ----------
 DEBUG_SECRET = None   # For testing, set to a number such as 42. Set back to None before your final commit.
-TIME_LIMIT = 60       # Seconds allowed in Time Challenge mode
-TIME_LIMIT_SECONDS = 60 # Active timer setting;
+TIME_LIMIT_SECONDS = 60 # Seconds allowed in Time Challenge mode
 print("Welcome to the Number Guessing Game")
 
 # ---------- Choose a level ----------
@@ -17,18 +16,20 @@ level_map = {
     '3': (1, 500, 10) # hard
 } 
 
-level = input("Select a level, 1 for Easy, 2 for Medium, 3 for Hard: ").strip()
+level_prompt = "Select a level:\n1. Easy\n2. Medium\n3. Hard\nEnter the level number (1, 2, or 3): "
+level = input(level_prompt).strip()
 
 while level not in level_map.keys(): # Retry invalid choices without converting them to integers.
-    level = input("Select a level, 1 for Easy, 2 for Medium, 3 for Hard").strip()
+    level = input(level_prompt).strip()
 
 range_start, range_end, attempts_allowed = level_map[level]
 
 # ---------- Choose a mode ----------
 # Goal: keep asking until the player picks Classic or Time Challenge.
-mode = input("Enter 1 for timed mode, 2 for Classic mode: ").strip() # Choices: 1 = Time Challenge, 2 = Classic.
+mode_prompt = "Select a mode:\n1. Time Challenge\n2. Classic\nEnter the mode number (1 or 2): "
+mode = input(mode_prompt).strip() # Choices: 1 = Time Challenge, 2 = Classic.
 while not mode in ('1', '2'):
-    mode = input("Enter 1 for timed mode, 2 for Classic mode: ").strip()
+    mode = input(mode_prompt).strip()
 isTimed = True if mode == '1' else False
 # ---------- Set up the round ----------
 # Goal: pick the secret number (use DEBUG_SECRET when it is not None) and start the clock.
