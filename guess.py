@@ -9,15 +9,19 @@ print("Welcome to the Number Guessing Game")
 
 # ---------- Choose a level ----------
 # Goal: keep asking until the player picks a valid level, then set the range and attempt limit.
-level_map = {'E': (1, 50, 10), 'M': (1, 100, 8), 'H': (1, 500, 10)} # Maps level to (start, end, attempts_allowed)
 
-level = input("Select a level, E for Easy, M for Medium, H for Hard: ").strip().capitalize() #Supports case-insensitive input
+level_map = { #each value is represented as range_start, range_end, total_attempts_allowed
+    '1': (1, 50, 10), # easy
+    '2': (1, 100, 8), # medium
+    '3': (1, 500, 10) # hard
+} 
+
+level = input("Select a level, 1 for Easy, 2 for Medium, 3 for Hard: ").strip()
 
 while level not in level_map.keys(): #keep looping until user enters a valid level
-    level = input("Select a level, E for Easy, M for Medium, H for Hard").strip().capitalize()
+    level = input("Select a level, 1 for Easy, 2 for Medium, 3 for Hard").strip()
 
 range_start, range_end, attempts_allowed = level_map[level]
-
 
 # ---------- Choose a mode ----------
 # Goal: keep asking until the player picks Classic or Time Challenge.
@@ -35,7 +39,6 @@ num_attempts = 0
 start_time = time.time()
 user_won = False
 while num_attempts < attempts_allowed:
-    print(f"Number of attempts remaining: {attempts_allowed-num_attempts}")
     if isTimed:
         print(f"Time remaining: {TIME_LIMIT_SECONDS - (time.time() - start_time)} seconds")
     user_guess = input(f"Guess a number between {range_start} to {range_end}: ").strip()
@@ -51,8 +54,7 @@ while num_attempts < attempts_allowed:
 
     if isTimed:
         time_elapsed = time.time() - start_time
-        if time_elapsed > TIME_LIMIT_SECONDS:
-            print(f"Time limit expired, the number was: {secret}")
+        if time_elapsed >= TIME_LIMIT_SECONDS:
             break #No need to continue after the secret is revealed
 
     if user_guess_int == secret:
@@ -62,6 +64,8 @@ while num_attempts < attempts_allowed:
         print("Too Low")
     else:
         print("Too High")
+
+    print(f" You have {attempts_allowed-num_attempts} attempts remaining")
 
 if user_won:
     print(f"CONGRATS, you are correct, you took {num_attempts} attempts to solve this")
